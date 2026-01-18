@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: leader-election-sa
+  namespace: leader-election-demo
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: leader-election-role
+  namespace: leader-election-demo
+rules:
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
+    verbs: ["get", "watch", "list", "create", "update", "patch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: leader-election-rolebinding
+  namespace: leader-election-demo
+subjects:
+  - kind: ServiceAccount
+    name: leader-election-sa
+    namespace: leader-election-demo
+roleRef:
+  kind: Role
+  name: leader-election-role
+  apiGroup: rbac.authorization.k8s.io

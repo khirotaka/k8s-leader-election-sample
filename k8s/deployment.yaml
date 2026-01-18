@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: leader-election
+  namespace: leader-election-demo
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: leader-election
+  template:
+    metadata:
+      labels:
+        app: leader-election
+    spec:
+      serviceAccountName: leader-election-sa
+      containers:
+      - name: leader-election
+        image: leader-election:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
